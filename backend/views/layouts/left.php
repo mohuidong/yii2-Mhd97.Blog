@@ -25,44 +25,66 @@
             </div>
         </form>
         <!-- /.search form -->
-
-        <?= dmstr\widgets\Menu::widget(
-            [
-                'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
-                'items' => [
-                    ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
-                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
-                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
-                    [
-                        'label' => 'Some tools',
-                        'icon' => 'share',
-                        'url' => '#',
-                        'items' => [
-                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
-                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
-                            [
-                                'label' => 'Level One',
-                                'icon' => 'circle-o',
-                                'url' => '#',
-                                'items' => [
-                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
-                                    [
-                                        'label' => 'Level Two',
-                                        'icon' => 'circle-o',
-                                        'url' => '#',
-                                        'items' => [
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
-                                        ],
-                                    ],
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-            ]
-        ) ?>
+        <ul class="sidebar-menu" data-widget="tree">
+            <?php foreach (Yii::$app->params['menu']['sidebar'] as $item):?>
+                <?php $subHtml = ''?>
+                <?php $sign = false?>
+                <?php foreach ($item['sub'] as $value):?>
+                    <?php $url = ('/' . $this->context->id . '/' . $this->context->action->id)?>
+                    <?php if ($url == $value['url']){
+                        $sign = true;
+                    }?>
+                    <?php $subHtml .= '<li class="'. ($url == $value['url'] ? 'active' : '') .'"><a href="' . $value['url'] .'">' . $value['label'] . '</a></li>'; ?>
+                <?php endforeach;?>
+                <li class="treeview <?=$sign ? 'active' : ''?>">
+                    <a href="javascritp:;">
+                        <i class="fa <?=$item['icon']?>"></i>
+                        <span><?=$item['label']?></span>
+                        <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <?=$subHtml?>
+                    </ul>
+                </li>
+            <?php endforeach;?>
+        </ul>
+<!--        --><?//= dmstr\widgets\Menu::widget(
+//            [
+//                'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
+//                'items' => [
+//                    ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
+//                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+//                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
+//                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+//                    [
+//                        'label' => 'Some tools',
+//                        'icon' => 'share',
+//                        'url' => '#',
+//                        'items' => [
+//                            ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii'],],
+//                            ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug'],],
+//                            [
+//                                'label' => 'Level One',
+//                                'icon' => 'circle-o',
+//                                'url' => '#',
+//                                'items' => [
+//                                    ['label' => 'Level Two', 'icon' => 'circle-o', 'url' => '#',],
+//                                    [
+//                                        'label' => 'Level Two',
+//                                        'icon' => 'circle-o',
+//                                        'url' => '#',
+//                                        'items' => [
+//                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+//                                            ['label' => 'Level Three', 'icon' => 'circle-o', 'url' => '#',],
+//                                        ],
+//                                    ],
+//                                ],
+//                            ],
+//                        ],
+//                    ],
+//                ],
+//            ]
+//        ) ?>
 
     </section>
 
