@@ -23,9 +23,35 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
+    /**
+     * 状态 正常
+     */
+    const STATUS_NORMAL = 10;
 
+    /**
+     * 状态 封号
+     */
+    const STATUS_BAN = 11;
+
+    /**
+     * 角色等级 吃瓜群众
+     */
+    const ROLE_ONE = 10;
+
+    /**
+     * 角色等级 带头搞事
+     */
+    const ROLE_TWO = 20;
+
+    /**
+     * 角色等级 吧啦大王
+     */
+    const ROLE_THREE = 30;
+
+    /**
+     * 角色等级 传销头目
+     */
+    const ROLE_FOUR = 40;
 
     /**
      * {@inheritdoc}
@@ -51,8 +77,43 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            [['phone'], 'required'],
+            [['phone', 'role', 'status'], 'integer'],
+            ['password_hash', 'string', 'min' => 6 ],
+            ['password_hash', 'match' , 'pattern' => '/^[!-~]+$/' , 'message' => '请输入英文，数字'],
+            ['phone' , 'match' , 'pattern' => '/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9])\d{8}$/', 'message' => '请输入正确的手机号码'],
+            [['auth_key', 'access_token'], 'string', 'max' => 32],
+            [['payment_password_hash', 'password_reset_token', 'email', 'avatar'], 'string', 'max' => 255],
+            ['payment_password_hash', 'default', 'value' => ''],
+            [['name','nickname'], 'string', 'max' => 20],
+            ['phone' , 'unique' , 'targetClass' =>'\common\models\User' , 'message'=>'电话号码已使用过'],
+            ['email' , 'unique' , 'targetClass' =>'\common\models\User' , 'message'=>'该邮箱已被使用'],
+            ['status', 'default', 'value' => self::STATUS_NORMAL],
+            ['status', 'in', 'range' => [self::ROLE_ONE, self::ROLE_TWO, self::ROLE_THREE, self::ROLE_FOUR]],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => '用户ID',
+            'auth_key' => 'auth_key',
+            'username' => '用户名',
+            'nickname' => '用户名',
+            'password_hash' => '密码',
+            'payment_password_hash' => '支付密码',
+            'password_reset_token' => '密码重置令牌',
+            'email' => '邮箱',
+            'phone' => '手机号',
+            'access_token' => '认证令牌',
+            'avatar' => '头像',
+            'role' => '1融资客 2经纪人 3信贷员',
+            'status' => '状态 1正常 2封号',
+            'created_at' => '注册时间',
+            'updated_at' => '更新时间',
         ];
     }
 
@@ -61,7 +122,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id, 'status' => self::STATUS_NORMAL]);
     }
 
     /**
@@ -80,7 +141,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'status' => self::STATUS_NORMAL]);
     }
 
     /**
@@ -97,7 +158,7 @@ class User extends ActiveRecord implements IdentityInterface
 
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+            'status' => self::STATUS_NORMAL,
         ]);
     }
 
@@ -186,4 +247,25 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->password_reset_token = null;
     }
+
+    /**
+     * 用户等级映射
+     * @var array
+     */
+    public static $roles = [
+        self::ROLE_ONE  => '吃瓜群众',
+        self::ROLE_TWO   => '带头搞事',
+        self::ROLE_THREE => '吧啦大王',
+        self::ROLE_FOUR => '传销头目',
+    ];
+
+    /**
+     * 获取用户类型文本名称
+     * @return object
+     */
+    public function getRoleText()
+    {
+        return self::$roles[$this->role];
+    }
+
 }

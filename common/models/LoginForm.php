@@ -3,6 +3,7 @@ namespace common\models;
 
 use Yii;
 use yii\base\Model;
+use common\models\Manager;
 
 /**
  * Login form
@@ -70,7 +71,8 @@ class LoginForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
+//            $this->_user = User::findByUsername($this->username);
+            $this->_user = Manager::find()->where(['or', ['phone' => $this->username], ['username' => $this->username]])->andWhere(['status' => Manager::STATUS_ACTIVE])->one();
         }
 
         return $this->_user;

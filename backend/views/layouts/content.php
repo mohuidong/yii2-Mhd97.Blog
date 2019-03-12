@@ -29,7 +29,7 @@ use dmstr\widgets\Alert;
         ) ?>
     </section>
 
-    <section class="content">
+    <section class="content container-fluid">
         <?= Alert::widget() ?>
         <?= $content ?>
     </section>

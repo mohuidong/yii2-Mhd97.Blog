@@ -86,15 +86,13 @@ $role['role_id'] = 1;
 <!-- Small boxes (Stat box) -->
 <div class="row">
     <div class="col-md-12">
-        <?php if($role['role_id'] != 3){ ?>
             <div class="list-div">
                 <ul class="import">
                     <li class="import_2">
                         <div class="module">
                             <i></i>
                             <div class="detail">
-                                <strong><?=$user['1']?></strong>
-                                <span>今日注册会员</span>
+                                <span>今日注册会员</span><strong><?=$user['1']?></strong>
                             </div>
                         </div>
                     </li>
@@ -133,7 +131,6 @@ $role['role_id'] = 1;
             </script>
             <br>
             <div style="clear: both"></div>
-        <?php } ?>
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">系统信息</h3>

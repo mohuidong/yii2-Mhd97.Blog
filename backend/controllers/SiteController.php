@@ -76,11 +76,11 @@ class SiteController extends Controller
         $user['3'] = $users;
         $user['4'] = $users;
         $user['5'] = $users;
-        $user['1']=$this->day(1,$user['1'],'created_at')->count();
-        $user['2']=$this->day(2,$user['2'],'created_at')->count();
-        $user['3']=$this->day(3,$user['3'],'created_at')->count();
-        $user['4']=$this->day(4,$user['4'],'created_at')->count();
-        $user['5']=$this->day(5,$user['5'],'created_at')->count();
+        $user['1']=$this->day(1, $user['1'], 'created_at')->count();
+        $user['2']=$this->day(2, $user['2'], 'created_at')->count();
+        $user['3']=$this->day(3, $user['3'], 'created_at')->count();
+        $user['4']=$this->day(4, $user['4'], 'created_at')->count();
+        $user['5']=$this->day(5, $user['5'], 'created_at')->count();
 
 
         return $this->render('index', [
@@ -105,7 +105,7 @@ class SiteController extends Controller
             return $this->goBack();
         } else {
             $model->password = '';
-
+//            var_dump($model);exit;
             return $this->render('login', [
                 'model' => $model,
             ]);
@@ -117,7 +117,8 @@ class SiteController extends Controller
      * @return string
      * @throws \yii\db\Exception
      */
-    private function getDbVersion(){
+    private function getDbVersion()
+    {
         $driverName = Yii::$app->db->driverName;
         if(strpos($driverName, 'mysql') !== false){
             $v = Yii::$app->db->createCommand('SELECT VERSION() AS v')->queryOne();
@@ -126,13 +127,14 @@ class SiteController extends Controller
         return $driverName;
     }
 
-    public function day($days=1, $query, $field){
+    public function day($days=1, $query, $field)
+    {
         $oneday=24*60*60;
         $today1 = strtotime(date('Y-m-d'));//今天
-        $today2 = $today1-$oneday;//昨天
-        $today3 = $today2-$oneday;//前天
-        $today4 = $today3-$oneday;//大前天
-        $today5 = $today4-$oneday;//大大前天
+        $today2 = $today1 - $oneday;//昨天
+        $today3 = $today2 - $oneday;//前天
+        $today4 = $today3 - $oneday;//大前天
+        $today5 = $today4 - $oneday;//大大前天
         switch ($days){
             case 1:
                 $query= $query->andWhere("$field > $today1");break;
