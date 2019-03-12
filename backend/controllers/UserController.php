@@ -92,6 +92,31 @@ class UserController extends Controller
         ]);
     }
 
+    public function actionUpdate($id, $page)
+    {
+        $model = $this->findModel($id);
+        $oldPass = $model->password_hash;
+
+        if ($model->load(Yii::$app->request->post())) {
+            $post = Yii::$app->request->post('User');
+            if (!empty($post['password_hash'])) {
+                $model->password_hash = Yii::$app->security->generatePasswordHash($post['password_hash']);
+            } else {
+                $model->password_hash = $oldPass;
+            }
+
+            if($model->save()){
+                $this->redirect(['index']);
+            }
+        }
+        $isUpdate = 'tiexibao';
+        return $this->render('create',[
+            'model' => $model,
+            'isUpdate' => $isUpdate,
+            'page' => $page,
+        ]);
+    }
+
     public function actionDelete($id)
     {
         $response = ['status' => 0, 'message' => '操作失败, 请重试'];

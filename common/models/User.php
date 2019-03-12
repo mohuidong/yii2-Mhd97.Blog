@@ -4,7 +4,7 @@ namespace common\models;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
+use common\models\base\BaseModel;
 use yii\web\IdentityInterface;
 
 /**
@@ -21,7 +21,7 @@ use yii\web\IdentityInterface;
  * @property integer $updated_at
  * @property string $password write-only password
  */
-class User extends ActiveRecord implements IdentityInterface
+class User extends BaseModel implements IdentityInterface
 {
     /**
      * 状态 正常
@@ -83,13 +83,14 @@ class User extends ActiveRecord implements IdentityInterface
             ['password_hash', 'match' , 'pattern' => '/^[!-~]+$/' , 'message' => '请输入英文，数字'],
             ['phone' , 'match' , 'pattern' => '/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9]|17[0|1|2|3|5|6|7|8|9])\d{8}$/', 'message' => '请输入正确的手机号码'],
             [['auth_key', 'access_token'], 'string', 'max' => 32],
-            [['payment_password_hash', 'password_reset_token', 'email', 'avatar'], 'string', 'max' => 255],
-            ['payment_password_hash', 'default', 'value' => ''],
-            [['name','nickname'], 'string', 'max' => 20],
+            [['password_reset_token', 'email_validate_token', 'email', 'avatar'], 'string', 'max' => 255],
+            [['username','nickname'], 'string', 'max' => 20],
             ['phone' , 'unique' , 'targetClass' =>'\common\models\User' , 'message'=>'电话号码已使用过'],
             ['email' , 'unique' , 'targetClass' =>'\common\models\User' , 'message'=>'该邮箱已被使用'],
+            ['nickname' , 'unique' , 'targetClass' =>'\common\models\User' , 'message'=>'该昵称已被使用'],
             ['status', 'default', 'value' => self::STATUS_NORMAL],
-            ['status', 'in', 'range' => [self::ROLE_ONE, self::ROLE_TWO, self::ROLE_THREE, self::ROLE_FOUR]],
+            ['role', 'in', 'range' => [self::ROLE_ONE, self::ROLE_TWO, self::ROLE_THREE, self::ROLE_FOUR]],
+            ['status', 'in', 'range' => [self::STATUS_NORMAL, self::STATUS_BAN]],
         ];
     }
 
@@ -102,9 +103,8 @@ class User extends ActiveRecord implements IdentityInterface
             'id' => '用户ID',
             'auth_key' => 'auth_key',
             'username' => '用户名',
-            'nickname' => '用户名',
+            'nickname' => '昵称',
             'password_hash' => '密码',
-            'payment_password_hash' => '支付密码',
             'password_reset_token' => '密码重置令牌',
             'email' => '邮箱',
             'phone' => '手机号',

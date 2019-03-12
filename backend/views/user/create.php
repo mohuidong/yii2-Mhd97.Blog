@@ -41,6 +41,21 @@ $this->params['breadcrumbs'][] = '编辑用户信息';
 
                         <div class="tab-content" style="">
 
+                            <div class="form-group" >
+                                <label class="col-sm-2 control-label">用户名</label>
+                                <div class="col-sm-3">
+                                    <div class="form-group ">
+                                        <?=$form->field($model, 'username')->textInput(['class' => 'form-control', 'placeholder' => '用户名'])->label(false)?>
+                                    </div>
+                                </div>
+                                <label class="col-sm-2 control-label">密码</label>
+                                <div class="col-sm-3">
+                                    <div class="form-group ">
+                                        <input class="form-control" name="User[password_hash]" value="" placeholder="不填则不修改登录密码">
+                                    </div>
+                                </div>
+                                <div class="clear"></div>
+
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">手机号<span style="color: red">*</span></label>
                                 <div class="col-sm-3">
@@ -48,45 +63,20 @@ $this->params['breadcrumbs'][] = '编辑用户信息';
                                         <?=$form->field($model, 'phone')->textInput(['class' => 'form-control', 'placeholder' => '手机号码'])->label(false)?>
                                     </div>
                                 </div>
+                                <label class="col-sm-2 control-label" >Email</label>
+                                <div class="col-sm-3" >
+                                    <?=$form->field($model, 'email')->textInput(['type'=> 'email','class' => 'form-control', 'placeholder' => '邮箱'])->label(false)?>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+
+
+                            <div class="form-group" >
                                 <label class="col-sm-2 control-label">昵称</label>
                                 <div class="col-sm-3">
                                     <div class="form-group ">
                                         <?=$form->field($model, 'nickname')->textInput(['class' => 'form-control', 'placeholder' => '昵称'])->label(false)?>
                                     </div>
-                                </div>
-
-                            </div>
-                            <div class="clear"></div>
-
-
-                            <div class="form-group" >
-                                <label class="col-sm-2 control-label">密码</label>
-                                <div class="col-sm-3">
-                                    <div class="form-group ">
-                                        <input class="form-control" name="User[password_hash]" value="" placeholder="不填则不修改登录密码">
-                                    </div>
-                                </div>
-                                <label class="col-sm-2 control-label">密码</label>
-                                <div class="col-sm-3">
-                                    <div class="form-group ">
-                                        <input class="form-control" name="User[password_hash]" value="" placeholder="不填则不修改登录密码">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="clear"></div>
-
-                            <div class="form-group" >
-                                <label class="col-sm-2 control-label" >昵称</label>
-                                <div class="col-sm-3">
-                                    <?=$form->field($model, 'nickname')->textInput(['class' => 'form-control', 'placeholder' => '昵称'])->label(false)?>
-                                </div>
-                                <div class="clear"></div>
-
-                            <div class="form-group" >
-                                <label class="col-sm-2 control-label" >Email</label>
-                                <div class="col-sm-3" >
-                                    <?=$form->field($model, 'email')->textInput(['type'=> 'email','class' => 'form-control', 'placeholder' => '邮箱'])->label(false)?>
                                 </div>
                             <div class="clear"></div>
 

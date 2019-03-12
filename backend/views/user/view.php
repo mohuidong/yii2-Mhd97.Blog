@@ -3,12 +3,10 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\models\User;
-use common\models\GoodsClass;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\FinanceProduct */
 
-$this->title = $model->name;
+$this->title = $model->username;
 $this->params['breadcrumbs'][] = ['label' => '用户', 'url' => ['user/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -24,26 +22,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id' ,
-            'pid',
-            'name' ,
+            'username' ,
+            'nickname' ,
             'email',
+            'phone',
             [
-                'label' => '性别',
-                'value' => $model->sex == 1? '男' : '女'
+                'label' => '等级',
+                'value' => $model->getRoleText($model->role)
             ],
-            'face',
-            'nickname',
-            'id_card',
-            'commission',
-            'balance',
-            [
-                'label' => '实名状态',
-                'value' => $model->authentication== 1 ? "是" : "否",
-            ] ,
-            'agent_at',
-            'commission_goods',
-            'commission_agent',
-            'subsidy',
+            'avatar',
             [
                 'label' => '创建时间',
                 'value' =>  date('Y-m-d',$model->created_at),
