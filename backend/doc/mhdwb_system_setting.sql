@@ -2,9 +2,6 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- ----------------------------
--- Table structure for txb_system_setting
--- ----------------------------
 DROP TABLE IF EXISTS `mhdwb_system_setting`;
 CREATE TABLE `mhdwb_system_setting`  (
   `key` varchar(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '键',

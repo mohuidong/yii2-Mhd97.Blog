@@ -1,5 +1,4 @@
 <?php
-
 namespace console\controllers;
 
 use common\models\SystemSetting;
