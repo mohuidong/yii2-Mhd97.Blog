@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use common\models\Post;
 
-$modelLabel = new \common\models\Post();
+$modelLabel = new \common\models\Posts();
 ?>
 <?php $this->beginBlock('header'); ?>
 <!-- <head></head>中代码块 -->
@@ -28,20 +28,21 @@ $modelLabel = new \common\models\Post();
                     <div class="tab-content">
 
                         <div class="form-group">
-                            <label for="user_id"
-                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("user_id") ?></label>
-                            <div class="col-sm-8">
-                                <div class="form-control"
-                                     style="height: auto;min-height: 34px;"><?= $model->user['name'] ?></div>
-                            </div>
-                        </div>
-                        <div class="clear"></div>
-                        <div class="form-group">
                             <label for="title"
                                    class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("title") ?></label>
                             <div class="col-sm-8">
                                 <div class="form-control"
                                      style="height: auto;min-height: 34px;"><?= $model->title ?></div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+
+                        <div class="form-group">
+                            <label for="summary"
+                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("summary") ?></label>
+                            <div class="col-sm-8">
+                                <div class="form-control"
+                                     style="height: auto;min-height: 34px;"><?= $model->summary ?></div>
                             </div>
                         </div>
                         <div class="clear"></div>
@@ -64,22 +65,22 @@ $modelLabel = new \common\models\Post();
                         </div>-->
                         <div class="form-group">
                             <label for="status"
-                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("status") ?></label>
+                                   class="col-sm-2 control-label">文章状态</label>
                             <div class="col-sm-8" style="width: 10%">
                                 <div class="form-control"
                                      style="height: auto;min-height: 34px;"><?= $status[$model->status] ?></div>
                             </div>
-                            <label for="recommend"
-                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("recommend") ?></label>
+                            <label for="status"
+                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("cat_id") ?></label>
                             <div class="col-sm-8" style="width: 10%">
                                 <div class="form-control"
-                                     style="height: auto;min-height: 34px;"><?= $recommend[$model->recommend] ?></div>
+                                     style="height: auto;min-height: 34px;"><?= $class[$model->cat_id] ?></div>
                             </div>
                         </div>
                         <div class="clear"></div>
                         <div class="form-group">
-                            <label for="img"
-                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("img") ?></label>
+                            <label for="label_img"
+                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("label_img") ?></label>
                             <div class="col-sm-8">
                                 <div class="form-control"
                                      style="height: auto;min-height: 34px;border: none"><img src="<?= $model->fullAddress ?>" style="width: 110px;height: 95px"></div>

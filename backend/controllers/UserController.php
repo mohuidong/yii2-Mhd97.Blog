@@ -4,12 +4,34 @@ namespace backend\controllers;
 use common\models\User;
 use yii\data\Pagination;
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Json;
 
 class UserController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'tree', 'tree-json'],
+                        'allow' => true,
+                        'roles' => ['userList'],
+                    ],
+                    [
+                        'actions' => ['create', 'delete', 'update', 'deletes'],
+                        'allow' => true,
+                        'roles' => ['userCud'],
+                    ],
+                ]
+            ],
+        ];
+    }
+
     public function actionIndex($key = null, $value = null, $role = null, $startTime = null, $endTime = null)
     {
         $query = User::find();
@@ -109,10 +131,8 @@ class UserController extends Controller
                 $this->redirect(['index']);
             }
         }
-        $isUpdate = 'tiexibao';
         return $this->render('create',[
             'model' => $model,
-            'isUpdate' => $isUpdate,
             'page' => $page,
         ]);
     }

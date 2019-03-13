@@ -5,7 +5,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use common\models\Post;
 
-$modelLabel = new \common\models\Post()
+$modelLabel = new \common\models\Posts()
 ?>
 
     <div class="row">
@@ -42,9 +42,9 @@ $modelLabel = new \common\models\Post()
                         </div>
                         <div class="form-group">
                             <label for="describe"
-                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("describe") ?><span style="color: red">*</span></label>
+                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("summary") ?><span style="color: red">*</span></label>
                             <div class="col-sm-8">
-                                <?php echo $form->field($model, 'describe')->textarea(["class" => "form-control", "placeholder" => $modelLabel->getAttributeLabel("describe"), "id" => 'describe']) ?>
+                                <?php echo $form->field($model, 'summary')->textarea(["class" => "form-control", "placeholder" => $modelLabel->getAttributeLabel("summary"), "id" => 'describe']) ?>
                                 <span style="color: #f8573b">请控制在225字符内</span>
                             </div>
                         </div>
@@ -59,20 +59,20 @@ $modelLabel = new \common\models\Post()
                         <div class="clear"></div>-->
                         <div class="form-group" >
                             <label for="cid"
-                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("class") ?></label>
+                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("cat_id") ?></label>
                             <div class="col-sm-8" style="width: 10%">
-                                <?php echo $form->field($model, 'class')->inline()->dropDownList($class) ?>
+                                <?php echo $form->field($model, 'cat_id')->inline()->dropDownList($class) ?>
                             </div>
                         </div>
                         <div class="clear"></div>
                         <div class="form-group">
-                            <label for="img"
+                            <label for="label_img"
                                    class="col-sm-2 control-label">封面图<span style="color: red">*</span></label>
                             <div class="col-sm-8">
 
                                 <div id="wrapper">
 
-                                    <?= $form->field($model, 'img')->widget('manks\FileInput', [
+                                    <?= $form->field($model, 'label_img')->widget('manks\FileInput', [
                                         'clientOptions' => [
                                             'formData' => [
                                                 'folder' => 'posts' // 上传的文件夹
@@ -99,11 +99,6 @@ $modelLabel = new \common\models\Post()
                                     <!--}-->
 
                             <!--</script>-->
-                            <label for="recommend"
-                                   class="col-sm-2 control-label"><?php echo $modelLabel->getAttributeLabel("recommend") ?></label>
-                            <div class="col-sm-8" style="width: 10%">
-                                <?php echo $form->field($model, 'recommend')->inline()->dropDownList($recommend) ?>
-                            </div>
                         </div>
                         <div class="clear"></div>
                         <div class="form-group">

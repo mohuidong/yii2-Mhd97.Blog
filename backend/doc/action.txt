@@ -1,0 +1,9 @@
+
+第一步 迁移管理员表manager
+首先创建rbac的四个表
+yii migrate --migrationPath=@yii/rbac/migrations
+php yii manager
+第二步 迁移文章分类表post-class
+php yii post-class
+第三步 迁移文章分类表setting
+php yii setting

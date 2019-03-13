@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = '编辑用户信息';
                 <div class="box-header">
                     <div class="box-tools">
                         <div class="input-group input-group-sm" style="width: 150px;">
-                            <?php if (isset($isUpdate)):?>
+                            <?php if ($this->context->id == 'update'):?>
                                 <a id="create_btn" href="<?=Url::to('/user/index?page=' . $page)?>" class="btn btn-xs btn-primary">返回列表</a>
                             <?php else:?>
                                 <a id="create_btn" href="<?=Url::to('/user/index')?>" class="btn btn-xs btn-primary">返回列表</a>

@@ -1,0 +1,55 @@
+﻿classAPI：
+    J-q-ajax：直接发送AJAX请求
+    例子：<button class="J-q-ajax" data-url="/a/b" data-type="get">点我</button>
+
+    J-q-confirm：二次验证通过后发送AJAX请求（可以传送批量选中checkbox的值）
+    普通二次验证，例子：<button class="J-q-confirm" data-url="/a/b" data-text="是否确定要执行该操作？" data-type="post">点我</button>
+    批量选中二次验证，例子：
+                <button
+                        class="J-q-confirm"
+                        data-text="是否确定要执行该操作？"
+                        data-url="/a/b"
+
+                        data-type="post"
+                        data-batch="1"
+                        data-batch-key="ids"
+                        data-batch-class="q-checkbox"
+                >批量删除</button>
+                当需要批量选中的时候，需要传入如下四个值：
+                    1.data-type="post"(使用post方法)
+                    2.data-batch="1"(开启批量选中功能)
+                    3.data-batch-key="ids"(发送AJAX中选中数组的key名是ids)
+                    4.data-batch-class="q-checkbox"(监听选中checkbox的class名是q-checkbox，且批量选中checkbox的class名是q-checkbox-father，当你配置该属性后，会自动监听class是 该属性+'-father' 的checkbox为批量选中框)
+
+
+    J-q-prompt：弹出单个输入框让用户输入字符串后，发送携带用户输入值的AJAX请求
+    例子：
+             <button
+                class="J-q-prompt"
+                data-url="/a/b"
+                data-text="请输入要修改的值"
+                data-type="post"
+                data-key="key"
+                data-value="value"
+             >点我</button>
+
+              1.当AJAX的值data-type="post"时，发送的请求才会携带key和value
+              2.key表示发送AJAX时用户输入值的key
+              3.value表示输入框中默认的value值
+
+
+    J-q-prompt：弹出多个输入框让用户输入字符串后，发送携带用户输入转成JSON数组的AJAX请求
+    例子：
+             <button
+                class="J-q-prompts"
+                data-url="/a/b"
+                data-type="post"
+                data-inputs='[{"key":"key","text":"需要输入的内容","value":"100"}]'
+             >点我</button>
+
+              1.当AJAX的值data-type="post"时，发送的请求才会携带inputs的JSON数组
+              2.data-inputs必须要传入一个标准的JSON数组，数组内每一个对象为一个提示用户的文本和输入框
+              3.inputs数组中的每个对象各值介绍：
+                    key：该输入框的name值，且发送AJAX时该数据的key值
+                    text：提示用户输入数据的文本提示内容
+                    value：该输入框的value值(如果有传值，该输入框就有默认值)，且发送AJAX时该数据的value值

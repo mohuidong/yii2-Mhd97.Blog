@@ -2,8 +2,9 @@
 
 namespace backend\controllers;
 
-use common\models\User;
+use common\models\Common;
 use Yii;
+use yii\helpers\Json;
 use common\models\Posts;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -11,6 +12,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
+use common\models\PostClass;
 
 /**
  * PostController implements the CRUD actions for AdminPost model.
@@ -20,8 +22,6 @@ class PostsController extends Controller
     /**
      * @inheritdoc
      */
-
-    public $status = ['10'=>'正在审核','11'=>'审核成功','12'=>'审核失败'];
 
     public function behaviors()
     {
@@ -92,15 +92,15 @@ class PostsController extends Controller
         );
         $products = $query->offset($pagination->offset)
             ->limit($pagination->limit)
-            ->orderBy('create_time desc')
+            ->orderBy('created_at desc')
             ->all();
 
         return $this->render('index', [
             'model' => $products,
             'pages' => $pagination,
             'query' => $querys,
-            'status' => $this->status,
-            'recommend' => $this->recommend,
+            'status' => Posts::$status,
+//            'recommend' => $this->recommend,
             'class' => Posts::$class,
         ]);
     }
@@ -114,8 +114,8 @@ class PostsController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'status' => $this->status,
-            'recommend' => $this->recommend,
+            'status' => Posts::$status,
+            'class' => Posts::$class,
         ]);
 
     }
@@ -130,21 +130,21 @@ class PostsController extends Controller
         $model = new Posts();
         $class = PostClass::formatData(PostClass::find()->all());
         if ($model->load(Yii::$app->request->post())) {
-            $uid = Yii::$app->request->post('AdminPost')['user_id'];
+            $model->user_id = Posts::MANAGER_UID;
+            $model->user_name = Posts::MANAGER_NAME;
             $model->status = intval($model->status);
             $model->title = Common::filter($model->title);
-            $model->content = Common::filter($model->content,2);
-            $model->recommend = intval($model->recommend);
-            $model->create_time = time();
+            $model->summary = Common::filter($model->summary,2);
             if($model->save()) {
                 return $this->redirect(['index']);
+            } else {
+                print_r($model->getErrors());
             }
         } else {
             return $this->render('create', [
                 'model' => $model,
                 'class' => $class,
-                'status' => $this->status,
-                'recommend' => $this->recommend,
+                'status' => Posts::$status,
             ]);
         }
     }
@@ -160,19 +160,18 @@ class PostsController extends Controller
         $model = $this->findModel($id);
         $class = PostClass::formatData(PostClass::find()->all());
         if ($model->load(Yii::$app->request->post())) {
+            $model->user_id = Posts::MANAGER_UID;
+            $model->user_name = Posts::MANAGER_NAME;
             $model->status = intval($model->status);
             $model->title = Common::filter($model->title);
-            $model->content = Common::filter($model->content,2);
-            $model->recommend = intval($model->recommend);
-            $model->create_time = time();
+            $model->summary = Common::filter($model->summary,2);
             if($model->save()){
                 return $this->redirect(['index']);
             }else{
                 return $this->render('create', [
                     'model' => $model,
                     'class' => $class,
-                    'status' => $this->status,
-                    'recommend' => $this->recommend,
+                    'status' => Posts::$status,
                 ]);
             }
 
@@ -180,33 +179,45 @@ class PostsController extends Controller
             return $this->render('create', [
                 'model' => $model,
                 'class' => $class,
-                'status' => $this->status,
-                'recommend' => $this->recommend,
+                'status' => Posts::$status,
             ]);
         }
     }
 
     /**
+     * ajax 单次删除
+     * @param $id
+     * @return array
+     */
+    public function actionDelete($id)
+    {
+        $response = ['status' => 0, 'message' => '操作失败, 请重试'];
+        Yii::$app->response->format = 'json';
+        if (Posts::deleteAll(['in', 'id', Json::decode($id)])) {
+            $response['status'] = 1;
+            $response['message'] = '操作成功';
+        }
+        return $response;
+    }
+
+    /**
+     * ajax 批量删除
      * Deletes an existing Post model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDeletes()
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    public function actionDelrecord(array $ids)
-    {
-        if (count($ids) > 0) {
-            $c = Post::deleteAll(['in', 'id', $ids]);
-            echo json_encode(array('errno' => 0, 'data' => $c, 'msg' => json_encode($ids)));
+        $response = ['status' => 0, 'message' => '操作失败, 请重试'];
+        Yii::$app->response->format = 'json';
+        if (Posts::deleteAll(['in', 'id', Json::decode(Yii::$app->request->post('ids'))])) {
+            $response['status'] = 1;
+            $response['message'] = '操作成功';
         } else {
-            echo json_encode(array('errno' => 2, 'msg' => ''));
+            $response['message'] = '操作失败';
         }
+        return $response;
     }
 
     /**
@@ -218,7 +229,7 @@ class PostsController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Post::findOne($id)) !== null) {
+        if (($model = Posts::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -237,18 +248,4 @@ class PostsController extends Controller
             return 300;
         }
     }
-
-    public function actionChange($id)
-    {
-        Yii::$app->response->format = 'json';
-        $response = ['status' => 0, 'message' => '操作失败, 请重试'];
-        $model = $this->findModel($id);
-        $model->recommend = ($model->recommend == Post::RECOMMEND_YES ? Post::RECOMMEND_NO : Post::RECOMMEND_YES);
-        if ($model->save(false)) {
-            $response['status'] = 1;
-            $response['message'] = '操作成功';
-        }
-        return $response;
-    }
-
 }

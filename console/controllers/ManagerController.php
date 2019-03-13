@@ -1,0 +1,59 @@
+<?php
+
+namespace console\controllers;
+
+use common\models\AuthAssignment;
+use common\models\AuthItem;
+use common\models\AuthItemChild;
+use common\models\Manager;
+use Yii;
+use yii\console\Controller;
+
+class ManagerController extends Controller{
+
+	public function actionIndex(){
+        $manager = new Manager();
+        $manager->username = 'momomo';
+        $manager->generateAuthKey();
+        $manager->setPassword('momo123');
+        $manager->email = '';
+        $manager->save();
+
+
+        $manager1 = new Manager();
+        $manager1->username = 'wxxwxx';
+        $manager1->generateAuthKey();
+        $manager1->setPassword('wxx1010');
+        $manager1->email = '';
+        $manager1->save();
+
+        $authItem = new AuthItem();
+        $authItem->name = 'root';
+        $authItem->type = 1;
+        $authItem->description = '真理';
+        $authItem->save();
+
+        $authItem1 = new AuthItem();
+        $authItem1->name = 'backendManager';
+        $authItem1->type = 1;
+        $authItem1->description = '博客后台管理员';
+        $authItem1->save();
+
+        $authItemChild = new AuthItemChild();
+        $authItemChild->parent = 'root';
+        $authItemChild->child = 'backendManager';
+        $authItemChild->save();
+
+        $authAssignment = new AuthAssignment();
+        $authAssignment->item_name = 'root';
+        $authAssignment->user_id = $manager->id;
+        $authAssignment->created_at = time();
+        $authAssignment->save();
+
+        $authAssignment1 = new AuthAssignment();
+        $authAssignment1->item_name = 'backendManager';
+        $authAssignment1->user_id = $manager1->id;
+        $authAssignment1->created_at = time();
+        $authAssignment1->save();
+	}
+}

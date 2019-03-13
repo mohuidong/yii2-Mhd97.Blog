@@ -3,9 +3,9 @@ use yii\bootstrap\ActiveForm;
 use yii\widgets\LinkPager;
 use yii\helpers\Url;
 use yii\helpers\Html;
-use common\models\Post;
+use common\models\Posts;
 use kartik\datetime\DateTimePicker;
-$modelLabel = new \common\models\Post()
+$modelLabel = new \common\models\Posts()
 ?>
 <?php $this->beginBlock('header'); ?>
 <!-- <head></head>中代码块 -->
@@ -72,7 +72,7 @@ $modelLabel = new \common\models\Post()
                                                 <option value="-1">全部</option>
                                                 <?php
                                                 foreach ($class as $k => $v) { ?>
-                                                    <option <?=$query['class']==$k?'selected':''?> value="<?=$k?>"><?=$v?></option>
+                                                    <option <?=$query['cat_id']==$k?'selected':''?> value="<?=$k?>"><?=$v?></option>
                                                 <?php }
                                                 ?>
                                             </select>
@@ -106,7 +106,15 @@ $modelLabel = new \common\models\Post()
                             </div>
                             <hr/>
                             <div class="col-sm-12">
-                                <button id="delete_btn" type="button" class="btn btn-xs btn-danger">批量删除</button>
+                                <button
+                                        data-text="是否确定要删除？"
+                                        data-url="<?=Url::toRoute([$this->context->id.'/deletes'])?>"
+                                        class="J-q-confirm btn btn-xs btn-danger q-checkbox-father"
+                                        data-batch="1"
+                                        data-batch-key="ids"
+                                        data-batch-class="q-checkbox"
+                                        data-type="post"
+                                >批量删除</button>
                                 <table id="data_table" class="table table-bordered table-striped dataTable" role="grid"
                                        aria-describedby="data_table_info">
                                     <thead>
@@ -117,13 +125,13 @@ $modelLabel = new \common\models\Post()
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
                                             aria-sort="ascending"><?= $modelLabel->getAttributeLabel("title") ?></th>
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
-                                            aria-sort="ascending"><?= $modelLabel->getAttributeLabel("status") ?></th>
+                                            aria-sort="ascending">状态</th>
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
-                                            aria-sort="ascending"><?= $modelLabel->getAttributeLabel("recommend") ?></th>
+                                            aria-sort="ascending"><?= $modelLabel->getAttributeLabel("user_name") ?></th>
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
-                                            aria-sort="ascending"><?= $modelLabel->getAttributeLabel("class") ?></th>
+                                            aria-sort="ascending">分类</th>
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
-                                            aria-sort="ascending"><?= $modelLabel->getAttributeLabel("create_time") ?></th>
+                                            aria-sort="ascending"><?= $modelLabel->getAttributeLabel("created_at") ?></th>
 
 
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
@@ -136,17 +144,13 @@ $modelLabel = new \common\models\Post()
                                     foreach ($model as $list) {
                                         ?>
                                         <tr id="rowid_$list->id">
-                                            <td><label><input type="checkbox" value="<?= $list->id ?>"></label></td>
+                                            <td><label><input type="checkbox" class="q-checkbox" value="<?= $list->id ?>"></label></td>
                                             <td><?= $list->id ?></td>
                                             <td><?= $list->title ?></td>
-                                            <td>
-                                                <?= $status[$list->status]?>
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-xs btn-primary J-q-ajax" title="点击修改状态" data-url="<?=Url::to(['/post/change', 'id' => $list->id])?>"><span class="glyphicon <?= $list->recommend?'glyphicon-ok':'glyphicon-remove' ?>"></span></a>
-                                            </td>
-                                            <td><?= $list->postclass['class_name']?></td>
-                                            <td><?= date("Y-m-d H:i:s",$list->create_time) ?></td>
+                                            <td><?= $status[$list->status]?></td>
+                                            <td><?= $list->user_name?></td>
+                                            <td><?= Posts::$class[$list->cat_id]?></td>
+                                            <td><?= date("Y-m-d H:i:s",$list->created_at) ?></td>
 
                                             <td class="center">
                                                 <a id="view_btn" class="btn btn-primary btn-sm"
@@ -155,9 +159,11 @@ $modelLabel = new \common\models\Post()
                                                 <a id="edit_btn" class="btn btn-primary btn-sm"
                                                    href="<?= Url::toRoute([$this->context->id . '/update', 'id' => $list->id]) ?>">
                                                     <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>
-                                                <a id="delete_btn" onclick="deleteAction('<?= $list->id ?>')"
-                                                   class="btn btn-danger btn-sm" href="javascript:;"> <i
-                                                        class="glyphicon glyphicon-trash icon-white"></i>删除</a>
+                                                <button class="J-q-confirm btn btn-danger btn-sm"
+                                                        data-url="<?=Url::toRoute([$this->context->id.'/delete', 'id'=>$list['id']])?>"
+                                                        data-text="是否删除文章:<?=$list['title']?>?"
+                                                        data-type="get">
+                                                    <i class="glyphicon glyphicon-trash icon-white"></i>删除</button>
                                             </td>
                                         </tr>
                                         <?php
