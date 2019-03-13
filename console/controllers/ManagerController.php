@@ -13,9 +13,9 @@ class ManagerController extends Controller{
 
 	public function actionIndex(){
         $manager = new Manager();
-        $manager->username = 'momomo';
+        $manager->username = 'admin';
         $manager->generateAuthKey();
-        $manager->setPassword('momo123');
+        $manager->setPassword('mohuidong');
         $manager->email = '';
         $manager->save();
 
