@@ -6,7 +6,7 @@ $user_id = Yii::$app->user->identity->id;
 //$role = UserRole::find()->where(['user_id'=>$user_id])->one();
 $role['role_id'] = 1;
 ?>
-<script src="/js/echarts.js"></script>
+<script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts-en.min.js"></script>
 <style>
     ul,li{
         list-style: none;
