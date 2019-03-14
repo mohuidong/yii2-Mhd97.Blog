@@ -14,7 +14,6 @@ $this->params['route'] = '/dashboard/index';
 <?php $this->beginBlock('footer') ?>
 <?= Html::jsFile('@web/js/auth.js') ?>
 <?php $this->endBlock() ?>
-
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
@@ -89,4 +88,3 @@ $this->params['route'] = '/dashboard/index';
         </div>
         <!-- /.col -->
     </div>
-    <!-- /.row -->
