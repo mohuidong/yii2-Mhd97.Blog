@@ -130,6 +130,7 @@ class Posts extends BaseModel
             'user_id' => '用户id',
             'user_name' => '用户名',
             'status' => '10审核中 11已审核 12审核失败',
+            'likes' => '点赞',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ];
@@ -149,6 +150,11 @@ class Posts extends BaseModel
         self::STATUS_PASS =>'审核成功',
         self::STATUS_FAILURE =>'审核失败',
     ];
+
+
+    public  static function getClassText($cat){
+        return self::$class[$cat];
+    }
 
     /**
      * 获取完整地址

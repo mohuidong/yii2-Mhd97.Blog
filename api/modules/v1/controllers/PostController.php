@@ -18,7 +18,6 @@ class PostController extends BaseController
             'title',
             'summary',
             'content',
-            'CONCAT("'. \Yii::$app->params['domain'] .'", label_img) AS label_img',
             'user_name',
             'created_at',
         ])->where(['status' => Posts::STATUS_PASS])->orderBy('created_at DESC');
@@ -38,9 +37,11 @@ class PostController extends BaseController
     {
         $post = Posts::find()->select([
             'title',
+            'summary',
             'content',
             'CONCAT("'. \Yii::$app->params['domain'] .'", label_img) AS label_img',
             'user_name',
+            'likes',
             'created_at',
         ])->where(['id' => $id, 'status' => Posts::STATUS_PASS])->one();
 

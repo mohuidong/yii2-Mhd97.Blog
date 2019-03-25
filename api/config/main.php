@@ -11,15 +11,26 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'api\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'v1' => [
+            'class' => 'api\modules\v1\Module',
+        ],
+    ],
     'components' => [
+        'response' => [
+            'format' => 'json',
+        ],
         'request' => [
-            'csrfParam' => '_csrf-api',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
         ],
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
+            'enableSession' => false,
+            'loginUrl' => null,
+//            'identityCookie' => ['name' => '_identity-api', 'httpOnly' => true],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
@@ -36,9 +47,14 @@ return [
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-            ],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/session'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/post'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/user'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/system-setting'],
+            ]
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
