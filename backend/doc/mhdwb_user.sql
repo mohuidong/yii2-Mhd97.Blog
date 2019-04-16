@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 192.168.1.96
+ Source Server         : 192.168.1.177
  Source Server Type    : MySQL
  Source Server Version : 50724
- Source Host           : 192.168.1.96:3306
+ Source Host           : 192.168.1.177:3306
  Source Schema         : MHD97
 
  Target Server Type    : MySQL
  Target Server Version : 50724
  File Encoding         : 65001
 
- Date: 13/03/2019 16:58:37
+ Date: 28/03/2019 19:24:39
 */
 
 SET NAMES utf8mb4;
@@ -39,6 +39,6 @@ CREATE TABLE `mhdwb_user`  (
   `created_at` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   `updated_at` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Compact;
 
 SET FOREIGN_KEY_CHECKS = 1;

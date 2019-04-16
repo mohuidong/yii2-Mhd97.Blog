@@ -15,15 +15,15 @@ class ManagerController extends Controller{
         $manager = new Manager();
         $manager->username = 'admin';
         $manager->generateAuthKey();
-        $manager->setPassword('mohuidong');
+        $manager->setPassword('123456');
         $manager->email = '';
         $manager->save();
 
 
         $manager1 = new Manager();
-        $manager1->username = 'wxxwxx';
+        $manager1->username = 'mohuidong';
         $manager1->generateAuthKey();
-        $manager1->setPassword('wxx1010');
+        $manager1->setPassword('123456');
         $manager1->email = '';
         $manager1->save();
 

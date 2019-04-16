@@ -96,6 +96,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -105,7 +106,6 @@ class SiteController extends Controller
             return $this->goBack();
         } else {
             $model->password = '';
-//            var_dump($model);exit;
             return $this->render('login', [
                 'model' => $model,
             ]);
