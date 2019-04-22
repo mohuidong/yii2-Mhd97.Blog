@@ -55,9 +55,14 @@ class Posts extends BaseModel
     const CLASS_LINUX = 6;
 
     /**
-     * 文章分类 ORDER
+     * 文章分类 其它
      */
     const CLASS_ORDER = 9;
+
+    /**
+     * 文章分类 公告
+     */
+    const CLASS_NOTICE = 10;
 
     /**
      * 文章分类 GIT
@@ -143,6 +148,7 @@ class Posts extends BaseModel
         self::CLASS_GIT => 'git',
         self::CLASS_ORDER => '其他',
         self::CLASS_SQL => '数据库',
+        self::CLASS_NOTICE => '公告',
     ];
 
     public static $status = [
@@ -164,4 +170,5 @@ class Posts extends BaseModel
     {
         return Yii::$app->params['domain'] . ($img ?: $this->label_img);
     }
+
 }

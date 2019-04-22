@@ -47,7 +47,7 @@ class Likes extends \yii\db\ActiveRecord
         return [
             [['posts_id', 'user_id', 'status'], 'integer'],
             [['status'], 'required'],
-            [['ip', 'created_at'], 'string', 'max' => 20],
+            [['ip'], 'string', 'max' => 20],
         ];
     }
 

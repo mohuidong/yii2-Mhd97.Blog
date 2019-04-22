@@ -65,6 +65,57 @@ class SystemSetting extends \yii\db\ActiveRecord
     const KEY_HREF = 'href';
 
     /**
+     * 对应链接
+     */
+    const HOME_SIGNATURE_TITLE = 'home_signature_title';
+
+    /**
+     * 对应链接
+     */
+    const HOME_SIGNATURE_CONTENT = 'home_signature_content';
+
+    /**
+     * 对应链接
+     */
+    const FOOTER_RIGHT = 'footer_right';
+
+    /**
+     * 对应链接
+     */
+    const FOOTER_LEFT = 'footer_left';
+
+    /**
+     * 主页背景
+     */
+    const BG_HOME = 'bg_home';
+
+    /**
+     * 主页分类
+     */
+    const BG_CLASS = 'bg_class';
+
+    /**
+     * 主页问答
+     */
+    const BG_ISSUE = 'bg_issue';
+
+    /**
+     * 主页打赏
+     */
+    const BG_REWARD = 'bg_reward';
+
+    /**
+     * 主页我的
+     */
+    const BG_ME = 'bg_me';
+
+    /**
+     * 主页背景
+     */
+    const BG_ABOUT = 'bg_about';
+
+
+    /**
      * 缓存key
      */
     const KEY_CACHE = 'setting';
@@ -115,6 +166,16 @@ class SystemSetting extends \yii\db\ActiveRecord
             self::KEY_COUNT_REGISTRATIONS => '累计注册量',
             self::KEY_POPULAR_SEARCH => '热门搜索 用英文,隔开',
             self::KEY_HREF => '对应链接 用英文,隔开',
+            self::HOME_SIGNATURE_TITLE => '主页标题',
+            self::HOME_SIGNATURE_CONTENT => '主页内容',
+            self::FOOTER_LEFT => '底部左链接',
+            self::FOOTER_RIGHT => '底部左链接',
+            self::BG_HOME => '主页背景',
+            self::BG_CLASS => '分类背景',
+            self::BG_ISSUE => '问答背景',
+            self::BG_ME => '我的背景',
+            self::BG_REWARD => '打赏背景',
+            self::BG_ABOUT => '关于背景',
         ];
     }
 

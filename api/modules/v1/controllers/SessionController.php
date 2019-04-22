@@ -16,28 +16,15 @@ class SessionController extends BaseController
      * 登陆
      * @return array
      */
-    public function actionCreate($mode)
+    public function actionCreate()
     {
         $request = \Yii::$app->request;
-        $phone = $request->getBodyParam('phone');
+        $username = $request->getBodyParam('username');
         $password = $request->getBodyParam('password');
-        $code = $request->getBodyParam('code');
 
-        switch ($mode) {
-            case 'pd':
-                $model = new ApiLoginForm();
-                $model->phone = $phone;
-                $model->password = $password;
-                break;
-            case 'code':
-                $model = new ApiCodeLoginForm();
-                $model->phone = $phone;
-                $model->code = $code;
-                break;
-            default:
-                throw new BadRequestHttpException('无效的参数：mode');
-                break;
-        }
+        $model = new ApiLoginForm();
+        $model->username = $username;
+        $model->password = $password;
 
         $res = $model->login();
 

@@ -130,7 +130,7 @@ class User extends BaseModel implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        return static::find()->where(['access_token' => $token])->andWhere(['>', 'expire_at', TIMESTAMP])->one();
     }
 
     /**
@@ -238,6 +238,20 @@ class User extends BaseModel implements IdentityInterface
     public function generatePasswordResetToken()
     {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
+    public static function getUsername($id)
+    {
+        if ($id == 0) {
+            return "官方唯一指定管理员";
+        }
+        return static::findOne($id)->nickname;
+    }
+
+    public function generateAccessToken()
+    {
+        $this->access_token = Yii::$app->security->generateRandomString();
+        return $this->access_token;
     }
 
     /**

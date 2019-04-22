@@ -27,7 +27,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'flush'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -162,5 +162,18 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionFlush()
+    {
+        $response = ['status' => 0, 'message' => '操作失败, 请重试'];
+        Yii::$app->response->format = 'json';
+
+        if (Yii::$app->cache->flush()) {
+            $response['status'] = 1;
+            $response['message'] = '操作成功';
+        }
+
+        return $response;
     }
 }

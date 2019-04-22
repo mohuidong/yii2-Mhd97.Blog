@@ -51,9 +51,20 @@ return [
             'showScriptName' => false,
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/session'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/post'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/user'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/post','extraPatterns' => [
+                    'POST,OPTIONS likes' => 'likes',
+                ]],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/user','extraPatterns' => [
+                    'POST,OPTIONS avatar' => 'set-avatar',
+                ]],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/system-setting'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/like'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/reply'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/post-class'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/issue','extraPatterns' => [
+                    'GET person' => 'person',
+                ]],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/answer'],
             ]
         ],
         'errorHandler' => [

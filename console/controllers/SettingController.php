@@ -23,7 +23,16 @@ class SettingController extends Controller{
             'customer_service_qq' => '914685196',
             'popular_search' => 0,
             'href' => 0,
-
+            'home_signature_title' => 'Mhd97',
+            'home_signature_content' => '非淡泊无以明志 非宁静无以致远',
+            'footer_right' => 'https://github.com/mohuidong/Mhd97.Blog.vue',
+            'footer_left' => 'https://www.bilibili.com/',
+            'bg_home' => '',
+            'bg_class' => '',
+            'bg_issue' => '',
+            'bg_me' => '',
+            'bg_about' => '',
+            'bg_reward' => '',
         ];
 	    foreach ($startSetting as $key => $value) {
             $newSetting = new SystemSetting();

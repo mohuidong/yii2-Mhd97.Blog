@@ -1,17 +1,24 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2018/11/8 0008
+ * Time: 下午 5:12
+ */
 namespace api\models\Form;
 
 use common\models\User;
+use common\service\Captcha;
 use Yii;
 use yii\base\Model;
 
 /**
  * Login form
  */
-class ApiLoginForm extends Model
+class ApiCodeLoginForm extends Model
 {
-    public $username;
-    public $password;
+    public $phone;
+    public $code;
     public $rememberMe = true;
 
     private $_user;
@@ -24,11 +31,11 @@ class ApiLoginForm extends Model
     {
         return [
             // phone and password are both required
-            [['username', 'password'], 'required'],
+            [['phone', 'code'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
-            ['password', 'validatePassword'],
+            ['code', 'validateCode'],
         ];
     }
 
@@ -39,12 +46,13 @@ class ApiLoginForm extends Model
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
      */
-    public function validatePassword($attribute, $params)
+    public function validateCode($attribute, $params)
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, '用户名或密码不正确');
+            $captcha = new Captcha($this->phone, 'api.login.phone');
+            if (!$user || !$captcha->verify($this->code, true)) {
+                $this->addError($attribute, '短信验证码错误');
             }
         }
     }
@@ -58,15 +66,16 @@ class ApiLoginForm extends Model
     {
         if ($this->validate()) {
             $accessToken = $this->_user->generateAccessToken();
-            $expireAt = TIMESTAMP + 60 * 120; // 设定token过期时间
+            $expireAt = TIMESTAMP + 60 * 30; // 设定token过期时间
             $this->_user->expire_at = $expireAt;
             if ($this->_user->save(false) == false) {
                 Yii::error($this->_user->getFirstErrors(), 'login');
                 return false;
             }
+
             return  [
                 'uid' => $this->_user->id,
-                'role' => $this->_user->role,
+                'type' => $this->_user->type,
                 'access_token' => $accessToken,
                 'expire_at' => $expireAt
             ];
@@ -83,7 +92,7 @@ class ApiLoginForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = User::findByPhone($this->phone);
         }
 
         return $this->_user;

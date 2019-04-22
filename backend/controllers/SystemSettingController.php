@@ -24,7 +24,7 @@ class SystemSettingController extends \yii\web\Controller
                         'roles' => ['SystemSettingList'],
                     ],
                     [
-                        'actions' => ['update','update-goods', 'get-information', 'get-goods'],
+                        'actions' => ['update', 'get-information'],
                         'allow' => true,
                         'roles' => ['SystemSettingCud'],
                     ],
@@ -100,23 +100,6 @@ class SystemSettingController extends \yii\web\Controller
             }
         }
 
-        return $response;
-    }
-
-    public function actionGetInformation()
-    {
-        $response = ['status' => 0, 'message' => '查询失败, 请重试', 'data' => []];
-        Yii::$app->response->format = 'json';
-        $list = Posts::find()
-            ->select([
-                'id',
-                'title',
-            ])->where([
-                'class' => Posts::CLASS_INDUSTRY_INFORMATION,
-            ])->asArray()->all();
-        if ($list) {
-            $response = ['status' => 1, 'message' => '查询成功', 'data' => $list];
-        }
         return $response;
     }
 }

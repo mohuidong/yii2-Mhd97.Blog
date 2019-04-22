@@ -29,8 +29,8 @@ class Reply extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['reply_id'], 'required'],
-            [['reply_id', 'posts_id', 'user_name', 'created_at'], 'integer'],
+            [['content', 'posts_id', 'user_id'], 'required'],
+            [['reply_id', 'posts_id', 'user_id', 'created_at'], 'integer'],
             [['content'], 'string', 'max' => 255],
             [['reply_id'], 'unique'],
         ];
@@ -44,7 +44,7 @@ class Reply extends \yii\db\ActiveRecord
         return [
             'reply_id' => 'Reply ID',
             'posts_id' => 'Posts ID',
-            'user_name' => 'User Name',
+            'user_id' => 'User id',
             'content' => 'Content',
             'created_at' => 'Created At',
         ];
