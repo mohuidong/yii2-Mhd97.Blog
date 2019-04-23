@@ -56,6 +56,7 @@ return [
                 ]],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/user','extraPatterns' => [
                     'POST,OPTIONS avatar' => 'set-avatar',
+                    'PUT,OPTIONS reset' => 'reset',
                 ]],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/system-setting'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'v1/like'],

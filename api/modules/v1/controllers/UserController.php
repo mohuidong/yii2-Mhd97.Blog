@@ -115,28 +115,24 @@ class UserController extends BaseController
      */
     public function actionReset(){
         $request = \Yii::$app->request;
-        $phone = $request->getBodyParam('phone');
-        $code = $request->getBodyParam('code');
+        $username = $request->getBodyParam('username');
         $password = $request->getBodyParam('password');
         $model = new FindUserForm();
 
-        $model->phone = $phone;
-        $model->code = $code;
+        $model->username = $username;
         $model->password_hash = $password;
 
         $password_hash = Yii::$app->security->generatePasswordHash($password);
         if ($model->validate()){
             $query = Yii::$app->db->createCommand()
-                ->update('{{%user}}', ['password_hash' => $password_hash], ['phone' => $phone])
+                ->update('{{%user}}', ['password_hash' => $password_hash], ['username' => $username])
                 ->execute();
-            if (is_array($query)) {
-                if (count($query) > 0){
-                    $response['message'] = '修改成功';
-                    $response['name'] = 'SUCCESSFUL_OPERATION';
-                    return $response;
-                }else{
-                    throw new BadRequestHttpException('修改失败');
-                }
+            if (count($query) > 0){
+                $response['message'] = '修改成功';
+                $response['name'] = 'SUCCESSFUL_OPERATION';
+                return $response;
+            }else{
+                throw new BadRequestHttpException('修改失败');
             }
         }else {
             throw new BadRequestHttpException(array_values($model->getFirstErrors())[0]);
@@ -220,171 +216,6 @@ class UserController extends BaseController
         }
     }
 
-    /**
-     * 设置昵称
-     * @param $object
-     * @param array $exclude
-     * @return array
-     */
-    public function actionSetNick()
-    {
-            $nickName = Yii::$app->request->getBodyParamt('nickName');
-            $model = Yii::$app->user->identity;
-            $model->nickname = $nickName;
-            if ($model->save()) {
-                $response['message'] = '修改成功';
-                $response['name'] = 'SUCCESS_OPERATION';
-                return $response;
-            } else {
-                throw new BadRequestHttpException('修改失败！');
-            }
-    }
-
-    /**
-     * 设置性别
-     * @return mixed
-     */
-    public function actionSetSex()
-    {
-            $sex = Yii::$app->request->getBodyParam('sex');
-            $model = Yii::$app->user->identity;
-            $model->sex = $sex;
-            if ($model->save()) {
-                $response['message'] = '修改成功';
-                $response['name'] = 'SUCCESS_OPERATION';
-                return $response;
-            } else {
-                throw new BadRequestHttpException('修改失败！');
-            }
-    }
-
-
-    /**
-     * 设置支付密码
-     * @return mixed
-     * @throws BadRequestHttpException
-     * @throws \yii\base\Exception
-     */
-    public function actionSetPayment()
-    {
-            $request = \Yii::$app->request;
-            $payment = $request->getBodyParam('paymentPassword');
-            $paymentSet = $request->getBodyParam('paymentPasswordSet');
-            $code = $request->getBodyParam('code');
-            $user = Yii::$app->user->identity;
-            if (!is_numeric($payment) || strlen($payment) != 6) {
-                throw new BadRequestHttpException('请输入6位数字');
-            }
-            if ($paymentSet === $payment) {
-                $user->payment_password_hash = Yii::$app->security->generatePasswordHash($paymentSet);
-                if ($user->validate()) {
-                    $captcha = new Captcha($user->phone,'api.Payment.phone');
-                    if ($captcha->verify($code)) {
-                        if ($user->save()) {
-                            $response['message'] = '修改成功';
-                            $response['name'] = 'SUCCESSFUL_OPERATION';
-                            return $response;
-                        } else {
-                            throw new BadRequestHttpException('修改失败！');
-                        }
-                    } else {
-                        throw new BadRequestHttpException('验证码错误');
-                    }
-                } else {
-                    throw new BadRequestHttpException(array_values($user->getFirstErrors())[0]);
-                }
-            } else {
-                throw new BadRequestHttpException('修改失败,两次密码不一致！');
-            }
-    }
-
-    /**
-     * 1.修改支付密码时校验原密码 2.重设支付密码
-     * @return mixed
-     */
-    public function actionCheck()
-    {
-            $payment = Yii::$app->request->getBodyParam('payment');
-            $user = Yii::$app->user->identity;
-            if (!is_numeric($payment) || strlen($payment) != 6) {
-                throw new BadRequestHttpException('请输入6位数字');
-            }
-            if (empty($user['payment_password_hash'])){
-                throw new BadRequestHttpException('校验失败,你还没有设置支付密码');
-            }
-            if (Yii::$app->getSecurity()->validatePassword($payment, $user['payment_password_hash'])) {
-                $response['message'] = '校验成功';
-                $response['name'] = 'SUCCESS_OPERATION';
-                $session = new Stepper('ResetPayments' . $user->getId());
-                $session->gotoStepTwo();
-                return $response;
-            } else {
-                throw new BadRequestHttpException('校验失败,密码错误');
-            }
-    }
-
-    /**
-     * 2.重设支付密码
-     * @return mixed
-     * @throws \yii\base\Exception
-     */
-    public function actionResetPayments()
-    {
-            $user = Yii::$app->user->identity;
-            $payment = Yii::$app->request->getBodyParam('payment');
-            $session = new Stepper('ResetPayments' . $user->getId());
-            if ($session->getCurrentStep() == 2) {
-                $newPayment = Yii::$app->request->getBodyParam('newPayment');
-                $resetPayment = Yii::$app->request->getBodyParam('resetPayment');
-                if ($newPayment === $resetPayment) {
-                    if (!is_numeric($newPayment) || strlen($newPayment) != 6) {
-                        throw new BadRequestHttpException('请输入6位数字');
-                    }
-                    $user->payment_password_hash = Yii::$app->security->generatePasswordHash($resetPayment);
-                    if ($user->save()) {
-                        $response['message'] = '修改成功';
-                        $response['name'] = 'SUCCESS_OPERATION';
-                        $session->destroyStep();
-                        return $response;
-                    } else {
-                        $error = array_values($user->getFirstErrors())[0];
-                        throw new BadRequestHttpException('修改失败:'.$error, 2001);
-                    }
-                } else {
-                    throw new BadRequestHttpException('两次密码不一致');
-                }
-            } else {
-                throw new BadRequestHttpException('旧密码呢？小老弟？');
-            }
-    }
-
-    public function actionResetPasswords()
-    {
-        $code = Yii::$app->request->getBodyParam('code');
-        $password = Yii::$app->request->getBodyParam('password');
-        $resetPassword = Yii::$app->request->getBodyParam('resetPassword');
-        $model = Yii::$app->user->identity;
-        if ($model->validate()) {
-            $captcha=new Captcha($model->phone, 'api.resetPassword.phone');
-            if ($captcha->verify($code)){
-                if ($password === $resetPassword) {
-                    $model->password_hash = Yii::$app->security->generatePasswordHash($resetPassword);
-                    if ($model->save()){
-                        $response['message'] = '修改成功';
-                        $response['name'] = 'SUCCESSFUL_OPERATION';
-                        return $response;
-                    } else {
-                        throw new BadRequestHttpException('修改失败');
-                    }
-                } else {
-                    throw new BadRequestHttpException('两次密码不一致', 2001);
-                }
-            } else {
-                throw new BadRequestHttpException('验证码错误', 2001);
-            }
-        }
-    }
-
     protected function dataHandle($object, $exclude = [])
     {
         $data = [];
@@ -403,110 +234,6 @@ class UserController extends BaseController
             }
         }
         return $data;
-    }
-
-    public function actionQrcodes()
-    {
-        $qr = Yii::$app->get('qr');
-        $user = Yii::$app->user->identity;
-
-        if ($user->type != User::TYPE_AGENT) {
-            throw new BadRequestHttpException('你不是经纪人！', 2006);
-        }
-        $id = $user->id;
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        if (empty($user->qrcode)) {
-            $user->qrcode = Yii::$app->params['domain.m'] . 'home/register?id=' . $id;
-            if ($user->save()){
-                $qrcode =  $qr
-                    ->setSize(600)
-                    ->setText($user->qrcode)
-                    ->writeString();
-                $qrcode = base64_encode($qrcode);
-                $data = [
-                    'AgentName' => $user->name ?: '未实名',
-                    'Phone' => $user->phone,
-                    'Qrcode' => $qrcode
-                ];
-                return $data;
-            }
-        } else {
-            $qrcode =  $qr
-                ->setSize(600)
-                ->setText($user->qrcode)
-                ->writeString();
-            $qrcode = base64_encode($qrcode);
-            $data = [
-                'AgentName' => $user->name ?: '未实名',
-                'Phone' => $user->phone,
-                'Qrcode' => $qrcode
-            ];
-            return $data;
-        }
-
-    }
-
-
-    public function actionRecommend($uid = 0, $perPage = 20)
-    {
-        $user = Yii::$app->user->identity;
-
-        if ($uid) {
-            $subUser = User::findOne($uid);
-
-            if ($subUser == false || $subUser->pid != $user->id) {
-                throw new BadRequestHttpException('无效的参数：uid');
-            }
-        }
-
-        $query = User::find()
-            ->select([
-                'u.id',
-                'u.type',
-                'u.name',
-                'u.phone',
-                'uas.subordinate_user_commission',
-                'uas.subordinate_user_group_commission',
-                'u.agent_at',
-                'u.created_at',
-            ])
-            ->from('{{%user}} AS u')
-            ->where([
-                'u.pid' => $uid ?: $user->id,
-            ])
-            ->join('LEFT JOIN', '{{%user_agent_stats}} AS uas', 'u.id = uas.subordinate_user_id AND uas.user_id = ' . ($uid ? 'u.grand_id' : 'u.pid'))
-            ->orderBy('u.id')
-            ->asArray();
-
-        $provider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => $perPage,
-                'validatePage' => false,
-            ],
-        ]);
-
-        $models = $provider->getModels();
-
-        foreach ($models as $index => $model) {
-            $models[$index] = $model;
-            $models[$index]['subordinate_user_commission'] = $model['subordinate_user_commission'] ?: '0.00';
-            $models[$index]['subordinate_user_group_commission'] = $model['subordinate_user_group_commission'] ?: '0.00';
-            $models[$index]['level'] = $uid ? 2 : 1;
-            if (empty($model['name'])) {
-                $models[$index]['name'] = '未实名';
-            } else {
-                if ($models[$index]['level'] == 2) {
-                    $models[$index]['name'] = substr($model['name'], '0' , '3') . 'XX';
-                }
-            }
-        }
-
-        $provider->setModels($models);
-        $name = isset($subUser) ? $subUser->name : $user->name;
-        $this->serializer['additionalAttributes'] = ['name' => !empty($name) ? $name : '未实名' ];
-
-        return $provider;
     }
 
     /**

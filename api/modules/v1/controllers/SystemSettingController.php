@@ -27,6 +27,7 @@ class SystemSettingController extends BaseController
             SystemSetting::BG_ISSUE,
             SystemSetting::BG_ME,
             SystemSetting::BG_REWARD,
+            SystemSetting::KEY_COUNT_REGISTRATIONS,
         ];
         $data = [];
         foreach ($systemSetting as $field => $val) {
