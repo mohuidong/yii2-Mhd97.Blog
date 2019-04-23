@@ -72,6 +72,10 @@ class UserController extends BaseController
 
         if ($model->validate()) {
             $model->phone = $phone;
+            $model->nickname = $phone;
+            $model->avatar = User::DEFAULT_AVATAR;
+            $model->role = User::ROLE_ONE;
+            $model->status = User::STATUS_NORMAL;
             if ($model->save()== false) {
                 throw new BadRequestHttpException();
             }
