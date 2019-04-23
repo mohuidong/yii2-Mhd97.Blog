@@ -151,7 +151,7 @@ class UserController extends BaseController
         if ($avatar != false) {
             $user->avatar = $avatar;
             if ($user->save() == false) {
-                throw new BadRequestHttpException('保存图片失败');
+                throw new BadRequestHttpException(array_values($user->getFirstErrors())[0]);
             }
         } else {
             throw new BadRequestHttpException('上传失败');
