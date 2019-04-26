@@ -13,7 +13,7 @@ return [
             ]],
             ['label' => '问答管理', 'url' => 'javascript:;', 'icon' => 'fa-question', 'sub' => [
                 ['label' => '问题列表', 'url' => '/question/index'],
-                ['label' => '答案列表', 'url' => '/answer/index'],
+//                ['label' => '答案列表', 'url' => '/answer/index'],
             ]],
             ['label' => '管理员管理', 'url' => 'javascript:;', 'icon' => ' fa-user', 'sub' => [
                 ['label' => '管理员列表', 'url' => '/manager/index'],
