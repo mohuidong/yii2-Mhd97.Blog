@@ -14,14 +14,13 @@ $this->params['route'] = '/dashboard/index';
 <?php $this->beginBlock('footer') ?>
 <?= Html::jsFile('@web/js/auth.js') ?>
 <?php $this->endBlock() ?>
-
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header">
                     <div class="box-tools">
                         <div class="input-group input-group-sm" style="width: 150px;">
-<!--                            --><?//= Html::a('添加管理用户', 'javascript:;', ['class' => 'btn btn-primary', 'data-auth-user' => 'add']) ?>
+                            <?= Html::a('添加管理用户', 'javascript:;', ['class' => 'btn btn-primary', 'data-auth-user' => 'add']) ?>
                         </div>
                     </div>
                 </div>
@@ -89,4 +88,3 @@ $this->params['route'] = '/dashboard/index';
         </div>
         <!-- /.col -->
     </div>
-    <!-- /.row -->

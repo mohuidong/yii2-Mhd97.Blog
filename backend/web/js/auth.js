@@ -1,9 +1,4 @@
-/*!
- * auth
- * xiewulong <xiewulong@vip.qq.com>
- * create: 2015/7/27
- * version: 1.0.0
- */
+
 
 //user add && edit && remove && role remove
 (function($, window, document, undefined){
