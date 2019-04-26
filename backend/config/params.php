@@ -10,10 +10,11 @@ return [
             ['label' => '文章管理', 'url' => 'javascript:;', 'icon' => 'fa-file-word-o', 'sub' => [
                 ['label' => '文章列表', 'url' => '/posts/index'],
                 ['label' => '文章分类', 'url' => '/post-class/index'],
+                ['label' => '评论列表', 'url' => '/reply/index'],
             ]],
             ['label' => '问答管理', 'url' => 'javascript:;', 'icon' => 'fa-question', 'sub' => [
                 ['label' => '问题列表', 'url' => '/question/index'],
-//                ['label' => '答案列表', 'url' => '/answer/index'],
+                ['label' => '答案列表', 'url' => '/answer/index'],
             ]],
             ['label' => '管理员管理', 'url' => 'javascript:;', 'icon' => ' fa-user', 'sub' => [
                 ['label' => '管理员列表', 'url' => '/manager/index'],
@@ -48,6 +49,13 @@ return [
                 'postClassCud' => '内容管理-文章分类-增删改',
             ],
         ],
+        'reply' => [
+            'name' => '文章管理-评论',
+            'items' => [
+                'replyList' => '内容管理-评论-列表',
+                'replyCud' => '内容管理-评论-删改',
+            ],
+        ],
         'question' => [
             'name' => '问答管理-问题列表',
             'items' => [
@@ -55,13 +63,13 @@ return [
                 'questionCud' => '问答管理-问题列表-增删改',
             ],
         ],
-//        'answer' => [
-//            'name' => '问答管理-答案列表',
-//            'items' => [
-//                'answerList' => '问答管理-问题列表-列表',
-//                'answerCud' => '问答管理-问题列表-增删改',
-//            ],
-//        ],
+        'answer' => [
+            'name' => '问答管理-答案列表',
+            'items' => [
+                'answerList' => '问答管理-答案列表-列表',
+                'answerCud' => '问答管理-答案列表-删改',
+            ],
+        ],
         'SystemSetting' => [
             'name' => '系统设置-系统配置',
             'items' => [

@@ -45,8 +45,8 @@ class Reply extends \yii\db\ActiveRecord
             'reply_id' => 'Reply ID',
             'posts_id' => 'Posts ID',
             'user_id' => 'User id',
-            'content' => 'Content',
-            'created_at' => 'Created At',
+            'content' => '评论',
+            'created_at' => '创建时间',
         ];
     }
 }

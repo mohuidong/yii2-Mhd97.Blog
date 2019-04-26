@@ -171,4 +171,7 @@ class Posts extends BaseModel
         return Yii::$app->params['domain'] . ($img ?: $this->label_img);
     }
 
+    public  static function getPostsTitle($id){
+        return Posts::findOne($id)->title;
+    }
 }

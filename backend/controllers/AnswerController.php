@@ -3,22 +3,21 @@
 namespace backend\controllers;
 
 use common\models\Common;
-use common\models\Reply;
 use Yii;
 use yii\helpers\Json;
-use common\models\Posts;
+use common\models\Question;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
-use common\models\PostClass;
+use common\models\Answer;
 
 /**
  * PostController implements the CRUD actions for AdminPost model.
  */
-class PostsController extends Controller
+class AnswerController extends Controller
 {
     /**
      * @inheritdoc
@@ -33,17 +32,12 @@ class PostsController extends Controller
                     [
                         'actions' => ['index','view'],
                         'allow' => true ,
-                        'roles' => ['postList'],
+                        'roles' => ['answerList'],
                     ],
                     [
-                        'actions' => ['create','delete','update','delrecord'],
+                        'actions' => ['create','update','delete','deletes','status'],
                         'allow' => true,
-                        'roles' => ['postCud'],
-                    ],
-                    [
-                        'actions' => ['change','status','score'],
-                        'allow' => true,
-                        'roles' => ['postChange'],
+                        'roles' => ['answerCud']
                     ],
                 ],
             ],
@@ -62,26 +56,18 @@ class PostsController extends Controller
      */
     public function actionIndex()
     {
-        $query = Posts::find();
+        $query = Answer::find();
         $querys = Yii::$app->request->get('query');
         if (is_array($querys)) {
             if (count($querys) > 0) {
-                if ($querys['title']) {
-                    $query = $query->andWhere(['{{%post}}.title' => $querys['title']]);
+                if ($querys['question_id']) {
+                    $query = $query->andWhere(['{{%answer}}.question_id' => $querys['question_id']]);
                 }
-                if ($querys['class'] >= 0) {
-                    $query = $query->andWhere(['{{%post}}.cat_id' => $querys['cat_id']]);
+                if ($querys['user_id']) {
+                    $query = $query->andWhere(['{{%answer}}.user_id' => $querys['user_id']]);
                 }
-                if ($querys['status'] >= 0) {
-                    $query = $query->andWhere(['{{%post}}.status' => $querys['status']]);
-                }
-                if ($querys['b_time']) {
-                    $querys['b_time'] = strtotime($querys['b_time']);
-                    $query = $query->andWhere(['>=', '{{%post}}.created_at', $querys['b_time']]);
-                }
-                if ($querys['e_time']) {
-                    $querys['e_time'] = strtotime($querys['e_time']);
-                    $query = $query->andWhere(['<=', '{{%post}}.updated_at', $querys['e_time']]);
+                if ($querys['answer']) {
+                    $query = $query->andWhere(['like', '{{%answer}}.answer', $querys['answer']]);
                 }
             }
         }
@@ -100,9 +86,6 @@ class PostsController extends Controller
             'model' => $products,
             'pages' => $pagination,
             'query' => $querys,
-            'status' => Posts::$status,
-//            'recommend' => $this->recommend,
-            'class' => Posts::$class,
         ]);
     }
 
@@ -115,8 +98,6 @@ class PostsController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'status' => Posts::$status,
-            'class' => Posts::$class,
         ]);
 
     }
@@ -126,29 +107,6 @@ class PostsController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Posts();
-        $class = PostClass::formatData(PostClass::find()->all());
-        if ($model->load(Yii::$app->request->post())) {
-            $model->user_id = Posts::MANAGER_UID;
-            $model->user_name = Posts::MANAGER_NAME;
-            $model->status = intval($model->status);
-            $model->title = Common::filter($model->title);
-            $model->summary = Common::filter($model->summary,2);
-            if($model->save()) {
-                return $this->redirect(['index']);
-            } else {
-                print_r($model->getErrors());
-            }
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-                'class' => $class,
-                'status' => Posts::$status,
-            ]);
-        }
-    }
 
     /**
      * Updates an existing Post model.
@@ -159,28 +117,18 @@ class PostsController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $class = PostClass::formatData(PostClass::find()->all());
         if ($model->load(Yii::$app->request->post())) {
-            $model->user_id = Posts::MANAGER_UID;
-            $model->user_name = Posts::MANAGER_NAME;
-            $model->status = intval($model->status);
-            $model->title = Common::filter($model->title);
-            $model->summary = Common::filter($model->summary,2);
+            $model->answer = Common::filter($model->answer);
             if($model->save()){
                 return $this->redirect(['index']);
             }else{
                 return $this->render('create', [
                     'model' => $model,
-                    'class' => $class,
-                    'status' => Posts::$status,
                 ]);
             }
-
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'class' => $class,
-                'status' => Posts::$status,
             ]);
         }
     }
@@ -197,18 +145,19 @@ class PostsController extends Controller
         $transaction = Yii::$app->db->beginTransaction();
         try {
 
-            if (Posts::deleteAll(['in', 'id', Json::decode($id)]) == false) {
+            if (Answer::deleteAll(['in', 'id', Json::decode($id)]) == false) {
                 throw new Exception('删除失败');
             }
 
-            $reply = Reply::findOne(['posts_id' => Json::decode($id)]);
-            if ($reply) {
-                if (Reply::deleteAll(['in', 'posts_id', Json::decode($id)]) == false) {
-                    throw new Exception('删除失败');
+            $question = Question::findOne(['best_id' => Json::decode($id)]);
+            if ($question) {
+                $question->best_id = 0;
+                $question->best_user_id =0;
+                if ($question->save() == false) {
+                    $error = array_values($question->getFirstErrors())[0];
+                    throw new Exception($error);
                 }
             }
-
-
             // 提交记录(执行事务)
             $transaction->commit();
             $response['status'] = 1;
@@ -235,7 +184,7 @@ class PostsController extends Controller
     {
         $response = ['status' => 0, 'message' => '操作失败, 请重试'];
         Yii::$app->response->format = 'json';
-        if (Posts::deleteAll(['in', 'id', Json::decode(Yii::$app->request->post('ids'))])) {
+        if (Answer::deleteAll(['in', 'id', Json::decode(Yii::$app->request->post('ids'))])) {
             $response['status'] = 1;
             $response['message'] = '操作成功';
         } else {
@@ -253,23 +202,11 @@ class PostsController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Posts::findOne($id)) !== null) {
+        if (($model = Answer::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
 
-    public function actionStatus()
-    {
-        $id = Yii::$app->request->post('id');
-        $status = Yii::$app->request->post('status');
-        $model = $this->findModel($id);
-        $model->status = $status;
-        if($model->save(false)){
-            return 100;
-        }else{
-            return 300;
-        }
-    }
 }

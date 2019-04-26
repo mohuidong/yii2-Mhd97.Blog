@@ -3,9 +3,9 @@ use yii\bootstrap\ActiveForm;
 use yii\widgets\LinkPager;
 use yii\helpers\Url;
 use yii\helpers\Html;
-use common\models\Posts;
+use common\models\Answer;
 use kartik\datetime\DateTimePicker;
-$modelLabel = new \common\models\Posts()
+$modelLabel = new \common\models\Answer()
 ?>
 <?php $this->beginBlock('header'); ?>
 <!-- <head></head>中代码块 -->
@@ -17,8 +17,8 @@ $modelLabel = new \common\models\Posts()
                 <div class="box-header">
                     <div class="box-tools">
                         <div class="input-group input-group-sm" style="width: 150px;">
-                            <a id="create_btn" href="<?= Url::toRoute([$this->context->id . '/create']) ?>"
-                               class="btn btn-xs btn-primary">添&nbsp;&emsp;加</a>
+<!--                            <a id="create_btn" href="--><?//= Url::toRoute([$this->context->id . '/create']) ?><!--"-->
+<!--                               class="btn btn-xs btn-primary">添&nbsp;&emsp;加</a>-->
                             &nbsp;&nbsp;
                         </div>
                     </div>
@@ -33,51 +33,25 @@ $modelLabel = new \common\models\Posts()
                                     <?php ActiveForm::begin(['id' => 'search-form', 'method' => 'get', 'options' => ['class' => 'form-inline'], 'action' => '']); ?>
                                     <div class="col-lg-2 mar-10">
                                         <div class="input-group" style="margin: 5px;">
-                                            <span class="input-group-addon" id="basic-addon1">标题:</span>
-                                            <input type="text" class="form-control" id="query[question]" name="query[question]" value="<?= isset($query["question"]) ? $query["question"] : "" ?>">
+                                            <span class="input-group-addon" id="basic-addon1">问题id:</span>
+                                            <input type="text" class="form-control" id="query[question_id]" name="query[question_id]" value="<?= isset($query["question_id"]) ? $query["question_id"] : "" ?>">
                                         </div>
                                     </div>
-                                    <div class="input-group" style="margin: 5px;">
-                                        <?php
-                                        echo '<label>创建时间:</label>';
-                                        echo DateTimePicker::widget([
-                                            'name' => 'query[b_time]',
-                                            'options' => ['placeholder' => ''],
-                                            //注意，该方法更新的时候你需要指定value值
-                                            'value' => !empty($query["b_time"]) ? $query["b_time"] : "",
-                                            'pluginOptions' => [
-                                                'autoclose' => true,
-                                                'format' => 'yyyy-mm-dd hh:ii:ss',
-                                                'todayHighlight' => true
-                                            ]
-                                        ]);
-                                        echo '<label>至:</label>';
-                                        echo DateTimePicker::widget([
-                                            'name' => 'query[e_time]',
-                                            'options' => ['placeholder' => ''],
-                                            //注意，该方法更新的时候你需要指定value值
-                                            'value' => !empty($query["e_time"]) ? $query["e_time"] : "",
-                                            'pluginOptions' => [
-                                                'autoclose' => true,
-                                                'format' => 'yyyy-mm-dd hh:ii:ss',
-                                                'todayHighlight' => true
-                                            ]
-                                        ])
-                                        ;?>
-                                    </div>
+
                                     <div class="col-lg-2 mar-10">
                                         <div class="input-group" style="margin: 5px;">
-                                            <span class="input-group-addon" id="basic-addon1">状态:</span>
-                                            <select name="query[status]" id="query[status]" style="height:34px;border: 1px solid #ccc;padding: 5px;">
-                                                <option value="-1">全部</option>
-                                                <?php
-                                                foreach ($status as $k=> $v) { ?>
-                                                    <option <?=$query['status']==$k?'selected':''?> value="<?=$k?>"><?=$v?></option>
-                                                <?php }
-                                                ?>
-                                            </select>
+                                            <span class="input-group-addon" id="basic-addon1">用户id:</span>
+                                            <input type="text" class="form-control" id="query[user_id]" name="query[user_id]" value="<?= isset($query["user_id"]) ? $query["user_id"] : "" ?>">
                                         </div>
                                     </div>
+
+                                    <div class="col-lg-2 mar-10">
+                                        <div class="input-group" style="margin: 5px;">
+                                            <span class="input-group-addon" id="basic-addon1">关键词:</span>
+                                            <input type="text" class="form-control" id="query[answer]" name="query[answer]" value="<?= isset($query["answer"]) ? $query["answer"] : "" ?>">
+                                        </div>
+                                    </div>
+
 
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary btn-sm"><i
@@ -107,16 +81,16 @@ $modelLabel = new \common\models\Posts()
                                     <thead>
                                     <tr role="row">
                                         <th><input id="data_table_check" type="checkbox"></th>
-                                        <th>ID</th>
-
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
-                                            aria-sort="ascending"><?= $modelLabel->getAttributeLabel("title") ?></th>
+                                            aria-sort="ascending">回复id</th>
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
-                                            aria-sort="ascending">状态</th>
+                                            aria-sort="ascending">问题id</th>
+                                        <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
+                                            aria-sort="ascending">评论</th>
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
                                             aria-sort="ascending">发布者</th>
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
-                                            aria-sort="ascending"><?= $modelLabel->getAttributeLabel("created_at") ?></th>
+                                            aria-sort="ascending">创建时间</th>
 
 
                                         <th tabindex="0" aria-controls="data_table" rowspan="1" colspan="1"
@@ -131,10 +105,10 @@ $modelLabel = new \common\models\Posts()
                                         <tr id="rowid_$list->id">
                                             <td><label><input type="checkbox" class="q-checkbox" value="<?= $list->id ?>"></label></td>
                                             <td><?= $list->id ?></td>
-                                            <td><?= $list->question ?></td>
-                                            <td><?= $status[$list->status]?></td>
+                                            <td><?= $list->question_id ?></td>
+                                            <td><?= $list->answer?></td>
                                             <td><?= \common\models\User::getUsername($list->user_id)?></td>
-                                            <td><?= date("Y-m-d H:i:s",$list->created_at) ?></td>
+                                            <td><?= date("Y-m-d H:i:s", $list->created_at) ?></td>
 
                                             <td class="center">
                                                 <a id="view_btn" class="btn btn-primary btn-sm"
@@ -145,7 +119,7 @@ $modelLabel = new \common\models\Posts()
                                                     <i class="glyphicon glyphicon-edit icon-white"></i>修改</a>
                                                 <button class="J-q-confirm btn btn-danger btn-sm"
                                                         data-url="<?=Url::toRoute([$this->context->id.'/delete', 'id'=>$list['id']])?>"
-                                                        data-text="是否删除问题:<?=$list['question']?>?"
+                                                        data-text="是否删除回复:<?=$list['answer']?>?"
                                                         data-type="get">
                                                     <i class="glyphicon glyphicon-trash icon-white"></i>删除</button>
                                             </td>

@@ -90,4 +90,9 @@ class Question extends \yii\db\ActiveRecord
         self::STATUS_NO => '审核失败',
         self::STATUS_SOLVE => '已解决',
     ];
+
+    public static function getQuestionName($id)
+    {
+        return static::findOne($id)->question;
+    }
 }
