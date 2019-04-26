@@ -56,7 +56,7 @@ class User extends BaseModel implements IdentityInterface
     /**
      * 默认头像
      */
-    const DEFAULT_AVATAR = 'posts/2019/04/5cbf1702062bf';
+    const DEFAULT_AVATAR = 'editor/2019/04/5cbf175aa1634';
 
     /**
      * {@inheritdoc}
