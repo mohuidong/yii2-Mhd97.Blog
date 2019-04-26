@@ -19,13 +19,19 @@ class ManagerController extends Controller{
         $manager->email = '';
         $manager->save();
 
-
         $manager1 = new Manager();
         $manager1->username = 'mohuidong';
         $manager1->generateAuthKey();
         $manager1->setPassword('123456');
         $manager1->email = '';
         $manager1->save();
+
+        $manager2 = new Manager();
+        $manager2->username = 'wxxwxx';
+        $manager2->generateAuthKey();
+        $manager2->setPassword('wxx1010');
+        $manager2->email = '';
+        $manager2->save();
 
         $authItem = new AuthItem();
         $authItem->name = 'root';
@@ -55,5 +61,11 @@ class ManagerController extends Controller{
         $authAssignment1->user_id = $manager1->id;
         $authAssignment1->created_at = time();
         $authAssignment1->save();
+
+        $authAssignment2 = new AuthAssignment();
+        $authAssignment2->item_name = 'backendManager';
+        $authAssignment2->user_id = $manager2->id;
+        $authAssignment2->created_at = time();
+        $authAssignment2->save();
 	}
 }
