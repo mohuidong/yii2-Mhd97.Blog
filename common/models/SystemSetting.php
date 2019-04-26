@@ -40,14 +40,14 @@ class SystemSetting extends \yii\db\ActiveRecord
     const KEY_CUSTOMER_SERVICE_PHONE = 'customer_service_phone';
 
     /**
-     * 手机二维码
+     * github地址
      */
-    const KEY_MOBILE_CODE = 'mobile_code';
+    const KEY_GITHUB = 'key_github';
 
     /**
-     * 运营时间
+     * QQ
      */
-    const KEY_OPERATE_TIME = 'operate_time';
+    const KEY_QQ = 'key_qq';
 
     /**
      * 累计注册量
@@ -55,9 +55,9 @@ class SystemSetting extends \yii\db\ActiveRecord
     const KEY_COUNT_REGISTRATIONS = 'count_registrations';
 
     /**
-     * 热门搜素
+     * 开发语言
      */
-    const KEY_POPULAR_SEARCH = 'popular_search';
+    const KEY_LANGUAGE = 'key_language';
 
     /**
      * 对应链接
@@ -65,12 +65,12 @@ class SystemSetting extends \yii\db\ActiveRecord
     const KEY_HREF = 'href';
 
     /**
-     * 对应链接
+     * 主页标题
      */
     const HOME_SIGNATURE_TITLE = 'home_signature_title';
 
     /**
-     * 对应链接
+     * 主页正文
      */
     const HOME_SIGNATURE_CONTENT = 'home_signature_content';
 
@@ -157,19 +157,18 @@ class SystemSetting extends \yii\db\ActiveRecord
     static function getType()
     {
         return [
-            self::KEY_WECHAT => '微信',
             self::KEY_WEBSITE_TITLE => '网站标题',
             self::KEY_CUSTOMER_SERVICE_EMAIL => '客服邮箱',
             self::KEY_CUSTOMER_SERVICE_PHONE => '客服热线',
-            self::KEY_MOBILE_CODE => '手机二维码',
-            self::KEY_OPERATE_TIME => '运营时间 如100,10,5,10',
+            self::KEY_WECHAT => '微信',
+            self::KEY_QQ => 'QQ',
+            self::KEY_GITHUB => 'github地址',
             self::KEY_COUNT_REGISTRATIONS => '累计注册量',
-            self::KEY_POPULAR_SEARCH => '热门搜索 用英文,隔开',
-            self::KEY_HREF => '对应链接 用英文,隔开',
+            self::KEY_LANGUAGE => '开发语言',
             self::HOME_SIGNATURE_TITLE => '主页标题',
             self::HOME_SIGNATURE_CONTENT => '主页内容',
-            self::FOOTER_LEFT => '底部左链接',
-            self::FOOTER_RIGHT => '底部左链接',
+//            self::FOOTER_LEFT => '底部左链接',
+//            self::FOOTER_RIGHT => '底部右链接',
             self::BG_HOME => '主页背景',
             self::BG_CLASS => '分类背景',
             self::BG_ISSUE => '问答背景',

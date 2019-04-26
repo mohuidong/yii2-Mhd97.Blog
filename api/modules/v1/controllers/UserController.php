@@ -65,6 +65,11 @@ class UserController extends BaseController
         $phone = $request->getBodyParam('username');
         $password = $request->getBodyParam('password');
         $rePassword = $request->getBodyParam('rePassword');
+        $nickname = $request->getBodyParam('nickname');
+        if ($password != $rePassword) {
+            throw new BadRequestHttpException("两次密码不一致");
+        }
+
         $model = new UserForm();
         $model->username = $phone;
         $model->password_hash = Yii::$app->security->generatePasswordHash($password);
@@ -72,7 +77,7 @@ class UserController extends BaseController
 
         if ($model->validate()) {
             $model->phone = $phone;
-            $model->nickname = $phone;
+            $model->nickname = $nickname;
             $model->avatar = User::DEFAULT_AVATAR;
             $model->role = User::ROLE_ONE;
             $model->status = User::STATUS_NORMAL;
