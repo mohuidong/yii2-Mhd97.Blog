@@ -12,6 +12,7 @@ use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 use OSS\OssClient;
+use common\models\SystemSetting;
 
 class UserController extends BaseController
 {
@@ -76,11 +77,26 @@ class UserController extends BaseController
         $model->generateAuthKey();
 
         if ($model->validate()) {
-            $model->phone = $phone;
-            $model->nickname = $nickname;
-            $model->avatar = User::DEFAULT_AVATAR;
-            $model->role = User::ROLE_ONE;
-            $model->status = User::STATUS_NORMAL;
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $model->phone = $phone;
+                $model->nickname = $nickname;
+                $model->avatar = User::DEFAULT_AVATAR;
+                $model->role = User::ROLE_ONE;
+                $model->status = User::STATUS_NORMAL;
+                if ($model->save() == false) {
+                    throw new Exception($model->getErrors());
+                }
+                $system = SystemSetting::find()->where(['key' => SystemSetting::KEY_COUNT_REGISTRATIONS])->one();
+                if ($system->updateCounters(['value' => 1]) == false) {
+                    throw new Exception($system->getErrors());
+                }
+                $transaction->commit();
+            } catch (\Exception $e){
+                $transaction->rollBack();
+            } catch (\Throwable $e) {
+                $transaction->rollBack();
+            }
             if ($model->save()== false) {
                 throw new BadRequestHttpException();
             }
