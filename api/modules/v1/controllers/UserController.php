@@ -117,7 +117,7 @@ class UserController extends BaseController
 
     public function actionUpdate()
     {
-        $nickcame = Yii::$app->request->getBodyParam('nickname');
+        $nickcame = Yii::$app->request->getBodyParam('nick');
         $email = Yii::$app->request->getBodyParam('email');
         $phone = Yii::$app->request->getBodyParam('phone');
 
